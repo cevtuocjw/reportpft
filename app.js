@@ -1,7 +1,8 @@
 (() => {
   "use strict";
 
-  const PASSWORD_HASH = "e3fe78a07fb3b43d4e617aace01da5666f8475cfb7e7cc633110385cb116b78c";
+  let PROJECTS = [];
+  const ENC = ENCRYPTED_DATA;
   const TODAY = new Date("2026-11-12T00:00:00+08:00");
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -45,11 +46,7 @@
     });
   }
 
-  async function sha256(text) {
-    if (!crypto?.subtle) return null;
-    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-    return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
-  }
+  const b64d = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
 
   async function unlock() {
     const value = pw.value.trim();
@@ -57,12 +54,23 @@
       gateErr.textContent = "请输入密码。";
       return;
     }
-    const hash = await sha256(value);
-    if (hash === PASSWORD_HASH) {
+    try {
+      const enc = new TextEncoder();
+      const baseKey = await crypto.subtle.importKey("raw", enc.encode(value), "PBKDF2", false, ["deriveKey"]);
+      const key = await crypto.subtle.deriveKey(
+        { name: "PBKDF2", salt: b64d(ENC.salt), iterations: 150000, hash: "SHA-256" },
+        baseKey,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["decrypt"]
+      );
+      const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64d(ENC.iv) }, key, b64d(ENC.ct));
+      PROJECTS = JSON.parse(new TextDecoder().decode(plain));
       sessionStorage.setItem("pft_auth", "1");
+      sessionStorage.setItem("pft_data", JSON.stringify(PROJECTS));
       gateErr.textContent = "";
       showApp();
-    } else {
+    } catch (err) {
       gateErr.textContent = "密码不正确。";
       pw.select();
     }
@@ -249,6 +257,7 @@
   pw.addEventListener("keydown", (e) => { if (e.key === "Enter") unlock(); });
   $("#logout").addEventListener("click", () => {
     sessionStorage.removeItem("pft_auth");
+    sessionStorage.removeItem("pft_data");
     location.reload();
   });
 
@@ -280,8 +289,16 @@
 
   bindZoom();
 
-  if (sessionStorage.getItem("pft_auth") === "1") {
-    showApp();
+  const saved = sessionStorage.getItem("pft_data");
+  if (sessionStorage.getItem("pft_auth") === "1" && saved) {
+    try {
+      PROJECTS = JSON.parse(saved);
+      showApp();
+    } catch {
+      sessionStorage.removeItem("pft_auth");
+      sessionStorage.removeItem("pft_data");
+      setTimeout(() => pw.focus(), 60);
+    }
   } else {
     setTimeout(() => pw.focus(), 60);
   }

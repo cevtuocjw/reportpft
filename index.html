@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b0b0b">
+  <meta name="robots" content="noindex,nofollow,noarchive">
   <title>平方科技 · 海外项目推进看板</title>
   <link rel="icon" href="./logo.png">
   <link rel="stylesheet" href="./styles.css">
@@ -61,7 +62,13 @@
       <button class="tab active" data-view="overview" type="button">总览</button>
       <button class="tab" data-view="week" type="button">本周 / 下周</button>
       <button class="tab" data-view="timeline" type="button">时间线</button>
-      <div class="tabs-note">滚轮 + Ctrl / 触摸板捏合缩放 · 拖动平移 · 一键复位</div>
+      <div class="tabs-note">滚轮 + Ctrl / 触摸板捏合缩放 · 拖动平移</div>
+      <div class="zoom" role="group" aria-label="缩放">
+        <button id="zoom-out" type="button" aria-label="缩小">−</button>
+        <span id="zoom-pct">100%</span>
+        <button id="zoom-in" type="button" aria-label="放大">+</button>
+        <button id="zoom-reset" class="zoom-reset" type="button">复位</button>
+      </div>
     </nav>
 
     <section id="view-overview" class="view active">
@@ -137,12 +144,6 @@
   </aside>
   <div id="scrim" class="scrim" hidden></div>
 
-  <div class="zoom" role="group" aria-label="缩放">
-    <button id="zoom-out" type="button" aria-label="缩小">−</button>
-    <span id="zoom-pct">100%</span>
-    <button id="zoom-in" type="button" aria-label="放大">+</button>
-    <button id="zoom-reset" class="zoom-reset" type="button">复位</button>
-  </div>
 </div>
 
 <script src="./data.js"></script>
