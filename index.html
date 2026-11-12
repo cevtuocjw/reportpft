@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0b0b">
+  <title>平方科技 · 海外项目推进看板</title>
+  <link rel="icon" href="./logo.png">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+<div id="gate" class="gate">
+  <div class="gate-card">
+    <img class="gate-logo" src="./logo.png" alt="PingFang Technology">
+    <div class="gate-kicker">PFT OVERSEAS · INTERNAL</div>
+    <h1>海外项目推进看板</h1>
+    <p class="gate-sub">2026 W46 · 港口 / 铁路 / 海关</p>
+    <label class="gate-label" for="pw">访问密码</label>
+    <div class="gate-row">
+      <input id="pw" type="password" autocomplete="current-password" placeholder="请输入密码">
+      <button id="enter" type="button">进入</button>
+    </div>
+    <p id="gate-err" class="gate-err"></p>
+    <p class="gate-note">仅前端访问控制；页面不含联系人邮箱/电话。</p>
+  </div>
+</div>
+
+<div id="app" class="app" hidden>
+  <header class="topbar">
+    <div class="brand">
+      <img src="./logo.png" alt="PingFang Technology">
+      <div>
+        <b>PFT OVERSEAS</b>
+        <span>海外项目推进看板</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="week-chip">2026 · W46</span>
+      <button id="logout" class="ghost-btn" type="button">退出</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">PORT · RAIL · CUSTOMS</div>
+        <h1>海外项目<br><em>推进看板</em></h1>
+        <p class="hero-sub">截至 2026-11-12。所有外联均为已备料、未发送；等确认后再发。</p>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b id="stat-total">10</b><span>个项目</span></div>
+        <div class="stat"><b id="stat-prepared">4</b><span>已备料</span></div>
+        <div class="stat accent"><b id="stat-sent">0</b><span>已发送</span></div>
+        <div class="stat"><b id="stat-next">6</b><span>下周启动</span></div>
+        <div class="stat"><b id="stat-urgent">5</b><span>30 天内截止</span></div>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="视图">
+      <button class="tab active" data-view="overview" type="button">总览</button>
+      <button class="tab" data-view="week" type="button">本周 / 下周</button>
+      <button class="tab" data-view="timeline" type="button">时间线</button>
+      <div class="tabs-note">滚轮 + Ctrl / 触摸板捏合缩放 · 拖动平移 · 一键复位</div>
+    </nav>
+
+    <section id="view-overview" class="view active">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">PROJECT FIELD</div>
+          <h2>十个项目的当前状态</h2>
+        </div>
+        <div class="legend">
+          <span><i class="dot bid"></i>立即投标</span>
+          <span><i class="dot qual"></i>资格预审</span>
+          <span><i class="dot shortlist"></i>短名单</span>
+          <span><i class="dot watch"></i>提前卡位</span>
+        </div>
+      </div>
+      <div class="board-viewport" id="board-viewport">
+        <div class="board" id="board"></div>
+      </div>
+    </section>
+
+    <section id="view-week" class="view">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">WEEKLY RHYTHM</div>
+          <h2>本周收口，下周开局</h2>
+        </div>
+        <p class="section-note">W46 = 11/09–11/15 · W47 = 11/16–11/22</p>
+      </div>
+      <div class="week-grid">
+        <div class="week-col">
+          <div class="week-col-head">
+            <span class="week-tag now">本周 W46</span>
+            <h3>已备料 · 未发送</h3>
+          </div>
+          <div id="week-now" class="week-list"></div>
+        </div>
+        <div class="week-col">
+          <div class="week-col-head">
+            <span class="week-tag next">下周 W47</span>
+            <h3>六项必须启动</h3>
+          </div>
+          <div id="week-next" class="week-list"></div>
+        </div>
+      </div>
+      <div class="callout">
+        <b>下周原则：</b>先保硬截止（P10 11/19、P08 11/25、P09 11/30、P05 12/01），再做关系型卡位（P06/P07）；P01 12/09 同步推进，不等下周结束。
+      </div>
+    </section>
+
+    <section id="view-timeline" class="view">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">DEADLINE LADDER</div>
+          <h2>按截止时间排队</h2>
+        </div>
+        <p class="section-note">只列硬日期；待确认/未招标排在最后</p>
+      </div>
+      <div id="timeline" class="timeline"></div>
+    </section>
+
+    <footer class="foot">
+      <span>平方科技 · 海外事业部 · 2026-11-12</span>
+      <span>数据口径：公开招标/采购公告 + 公司资料；未发送任何邮件。</span>
+    </footer>
+  </main>
+
+  <aside id="drawer" class="drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <div id="drawer-kicker" class="drawer-kicker"></div>
+      <button id="drawer-close" class="drawer-close" type="button" aria-label="关闭">×</button>
+    </div>
+    <div id="drawer-body" class="drawer-body"></div>
+  </aside>
+  <div id="scrim" class="scrim" hidden></div>
+
+  <div class="zoom" role="group" aria-label="缩放">
+    <button id="zoom-out" type="button" aria-label="缩小">−</button>
+    <span id="zoom-pct">100%</span>
+    <button id="zoom-in" type="button" aria-label="放大">+</button>
+    <button id="zoom-reset" class="zoom-reset" type="button">复位</button>
+  </div>
+</div>
+
+<script src="./data.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
